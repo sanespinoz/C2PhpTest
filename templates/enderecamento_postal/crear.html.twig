@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New CEP
+{% endblock %}
+
+{% block body %}
+	{% block stylesheets %}
+		{#{{ encore_entry_link_tags('app') }}#}
+		<link rel="stylesheets" href="./node_modules/bootstrap/dist/css/bootstrap.css">
+	{% endblock %}
+	<!-- Adicionando Javascript -->
+	<head>
+		<title>ViaCEP Webservice</title>
+		<meta
+		http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+		<!-- Adicionando JQuery -->
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+		<!-- Adicionando Javascript -->
+		<script>
+			$(document).ready(function () {
+
+function limpa_formulário_cep() { // Limpa valores do formulário de cep.
+$("#cep").val("");
+$("#rua").val("");
+$("#bairro").val("");
+$("#cidade").val("");
+$("#uf").val("");
+$("#ibge").val("");
+}
+
+// Quando o campo cep perde o foco.
+$("#cep").blur(function () { // Nova variável "cep" somente com dígitos.
+var cep = $(this).val().replace(/\D/g, '');
+
+// Verifica se campo cep possui valor informado.
+if (cep != "") { // Expressão regular para validar o CEP.
+var validacep = /^[0-9]{8}$/;
+
+// Valida o formato do CEP.
+if (validacep.test(cep)) { // Preenche os campos com "..." enquanto consulta webservice.
+$("#rua").val("...");
+$("#bairro").val("...");
+$("#cidade").val("...");
+$("#uf").val("...");
+$("#ibge").val("...");
+
+// Consulta o webservice viacep.com.br/
+$.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
+
+if (!("erro" in dados)) { // Atualiza os campos com os valores da consulta.
+$("#rua").val(dados.logradouro);
+$("#bairro").val(dados.bairro);
+$("#cidade").val(dados.localidade);
+$("#uf").val(dados.uf);
+$("#ibge").val(dados.ibge);
+} else { // CEP pesquisado não foi encontrado. erro =  true
+
+alert('CEP não encontrado', 'info');
+}
+});
+} else { // cep é inválido.
+alert('Formato inválido', 'warning');
+limpa_formulário_cep()
+}
+} else { // cep sem valor, limpa formulário.
+limpa_formulário_cep();
+}
+});
+});
+
+function alert(message, type) {
+var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+var wrapper = document.createElement('div')
+wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible" role="alert"  style="margin-bottom: 35px;">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+alertPlaceholder.append(wrapper);
+}
+
+
+function valida() {
+var valor = false;
+var c = $("#cep").value;
+var r = $("#rua").value;
+var b = $("#bairro").value;
+var ci = $("#cidade").value;
+var u = $("#uf").value;
+var i = $("#ibge").value;
+if ((c != "") && (r != "") && (b != "") && (ci != "") && (u != "") && (i != "")) {
+valor = true
+};
+return valor;
+}
+
+function guardar() { // document.getElementById("myForm").submit();
+var cep = document.getElementById("cep").value;
+var rua = document.getElementById("rua").value;
+var bairro = document.getElementById("bairro").value;
+var cidade = document.getElementById("cidade").value;
+var uf = document.getElementById("uf").value;
+var ibge = document.getElementById("ibge").value;
+
+var eval = valida();
+if (eval) {
+var ar = {};
+ar.cep = cep;
+ar.rua = rua;
+ar.bairro = bairro;
+ar.cidade = cidade;
+ar.uf = uf;
+ar.ibge = ibge;
+
+$.ajax({
+type: "POST",
+url: "{{ path('registrar') }}",
+data: {
+ar: ar
+}
+}).always(function () {
+alert('CEP foi registrado com sucesso', 'success');
+});
+location.reload();
+} else 
+alert('Formulário incompleto', 'warning');
+
+
+
+}
+		</script>
+
+	</head>
+	<div id="liveAlertPlaceholder" ></div>
+
+	<div style="align:center; width:500px; ">
+		<div class="panel-group fourcol" >
+			<div class="panel panel-default threecol" style=" background-color:#000; width:400px; ">
+				<div class="panel-body threecol" style="background-color: white; width:350px;">
+					<h2>New CEP</h2>
+					<form method="get" action=".">
+						<label>Cep:</label>
+						<div class="row">
+							<input name="cep" type="text" id="cep" value="" size="10" maxlength="9"/><br/>
+						</div>
+						<label>Rua:</label>
+						<div class="row">
+							<input name="rua" type="text" id="rua" size="60"/><br/>
+						</div>
+						<label>Bairro:</label>
+						<div class="row">
+							<input name="bairro" type="text" id="bairro" size="40"/><br/>
+						</div>
+						<label>Cidade:</label>
+						<div class="row">
+							<input name="cidade" type="text" id="cidade" size="40"/><br/>
+						</div>
+						<label>Estado:</label>
+						<div class="row">
+						<input name="uf" type="text" id="uf" size="2"/><br/>
+						<label>IBGE:</label>
+						<div class="row">
+								<input name="ibge" type="number" id="ibge" size="2"/><br/><br/>
+						</div>
+
+						<div class="row" style="text-align: center; padding-top:35px;">
+							<input type="button" onclick="guardar()" value="Save">
+
+							<a  href="{{ path('enderecamento_postal_index') }}" class="btn btn-info" role="button">
+									Lists CEPs</a>
+						</div>
+
+						</form>
+
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	{% endblock %}

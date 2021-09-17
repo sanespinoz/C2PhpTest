@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CEP LIST{% endblock %}
+
+{% block body %}
+    <h1>CEP LIST</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Cep</th>
+                <th>Logradouro</th>
+                <th>Bairro</th>
+                <th>Complemento</th>
+                <th>Localidade</th>
+                <th>Uf</th>
+                <th>Ibge</th>
+                <th>Gia</th>
+                <th>Ddd</th>
+                <th>Siafi</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for enderecamento_postal in enderecamento_postals %}
+            <tr>
+                <td>{{ enderecamento_postal.id }}</td>
+                <td>{{ enderecamento_postal.cep }}</td>
+                <td>{{ enderecamento_postal.logradouro }}</td>
+                <td>{{ enderecamento_postal.bairro }}</td>
+                <td>{{ enderecamento_postal.complemento }}</td>
+                <td>{{ enderecamento_postal.localidade }}</td>
+                <td>{{ enderecamento_postal.uf }}</td>
+                <td>{{ enderecamento_postal.ibge }}</td>
+                <td>{{ enderecamento_postal.gia }}</td>
+                <td>{{ enderecamento_postal.ddd }}</td>
+                <td>{{ enderecamento_postal.siafi }}</td>
+                <td>
+                    <a href="{{ path('enderecamento_postal_show', {'id': enderecamento_postal.id}) }}">show</a>
+                    <a href="{{ path('enderecamento_postal_edit', {'id': enderecamento_postal.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('home') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<style>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  width: 70%;
+  padding: 8px 10px;
+  margin: 2px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=text] {
+  width: 70%;
+  padding: 8px 10px;
+  margin: 2px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+
+
+div {
+  border-radius: 5px;
+  padding: 8px;
+}
+</style>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}VIA CEP{% endblock %}</title>
+ 
+        {# Run `composer require symfony/webpack-encore-bundle`
+           and uncomment the following Encore helpers to start using Symfony UX #}
+        {% block stylesheets %}
+            {#{{ encore_entry_link_tags('app') }}#}
+            <link rel="stylesheets" href="./node_modules/bootstrap/dist/css/bootstrap.css">
+        {% endblock %}
+
+
+    </head>
+    <body>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% block body %}{% endblock %}
+                {% block javascripts %}
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+                <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        {% endblock %}
+    </body>
+</html>
